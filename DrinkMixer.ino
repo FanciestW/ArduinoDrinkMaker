@@ -35,6 +35,7 @@ char* menu[] = {"Drink1", "Drink2", "Drink3", "Drink4", "Drink5", "Drink6"};
 //------Selection Values-------------------------------
 int drinkSel = 0;
 int sizeSel = 0;
+int settingSel = 0;
 
 
 void setup() {
@@ -52,11 +53,12 @@ void setup() {
   delay(2000);
   display.clearDisplay();
   Timer1.initialize(500000);
-  updateScreen();
+  updateDrinkSelScreen();
 }
 
 void loop() {
   // put your main code here, to run repeatedly:
+  updateDrinkSelScreen();
   joyX = analogRead(pinJoyX);
   joyY = analogRead(pinJoyY);
 //  Serial.print("X: ");
@@ -90,9 +92,17 @@ void loop() {
     }
     joyXLastState = joyXState;
   }
+  if(joyYState != joyYLastState){
+    if(joyYState == 1 && joyY > 800){
+      joyDown();
+    } else if(joyYState == 1 && joyY < 300){
+      joyUp();
+    }
+    joyXLastState = joyXState;
+  }
 }
 
-void updateScreen(){
+void updateDrinkSelScreen(){
   display.clearDisplay();
   display.setTextSize(2);
   display.setCursor(0, 0);
@@ -105,13 +115,48 @@ void joyLeft(){
   if(drinkSel == 0) drinkSel = sizeof(menu) / sizeof(char*) - 1;
   else drinkSel--;
   Serial.println("Drink " + drinkSel);
-  updateScreen();
+  updateDrinkSelScreen();
 }
 
 void joyRight(){
   if(drinkSel == sizeof(menu) / sizeof( char* ) - 1) drinkSel = 0;
   else drinkSel++;
   Serial.println("Drink " + drinkSel);
-  updateScreen();
+  updateDrinkSelScreen();
+}
+
+void joyDown(){
+  Serial.println("Start");
+  joyXLastState = 0;
+  joyYLastState = 0;
+  display.clearDisplay();
+  display.display();
+  for(;;){
+    joyX = analogRead(pinJoyX);
+    joyY = analogRead(pinJoyY);
+//    Serial.print("X: ");
+//    Serial.print(joyX);
+//    Serial.print(" Y: ");
+//    Serial.print(joyY);
+//    Serial.print(" ");
+//    Serial.println(btnState);
+    if(joyX > 800 || joyX < 300) joyXState = 1;
+    else joyXState = 0;
+    if(joyY > 800 || joyY < 300) joyYState = 1;
+    else joyYState = 0;
+    if(joyYState != joyYLastState){
+      if(joyYState == 1 && joyY > 800){
+        joyDown();
+      } else if(joyYState == 1 && joyY < 300){
+        break;
+      }
+      joyYLastState = joyYState;
+    }
+  }
+  Serial.println("Done");
+}
+
+void joyUp(){
+  
 }
 
