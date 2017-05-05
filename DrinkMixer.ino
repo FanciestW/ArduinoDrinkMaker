@@ -75,7 +75,7 @@ void loop() {
     updateDrinkSelScreen();
     if(btnState != lastBtnState){
       if(btnState == HIGH){
-        Serial.println("on");
+        pourDrink();
       }
       delay(50);
     }
@@ -160,6 +160,10 @@ void updateSettingScreen(){
   for(int i = 0; i < 3; i++){
     Serial.println(changes[i]);
   }
+}
+
+void pourDrink(){
+  //TODO::Implement pouring the drink
 }
 
 void drinkLeft(){
