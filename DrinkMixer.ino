@@ -28,7 +28,7 @@ int joyYState = 0;
 int joyYLastState = 0;
 
 //------Drink Menu-------------------------------------
-char* menu[] = {"Drink1", "Drink2", "Drink3", "Drink4", "Drink5", "Drink6"};
+char* menu[] = {"Test", "Drink2", "Drink3", "Drink4", "Drink5", "Drink6"};
 //------Pump Menu--------------------------------------
 int pump[] = {0, 0, 0};
 int changes[] = {0, 0, 0};
@@ -141,8 +141,7 @@ void updateDrinkSelScreen(){
   display.clearDisplay();
   display.setTextSize(2);
   display.setCursor(0, 0);
-  display.print("Drink ");
-  display.print(drinkSel + 1);
+  display.print(menu[drinkSel]);
   display.display();
 }
 
