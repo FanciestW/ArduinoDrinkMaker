@@ -28,7 +28,7 @@ int joyYState = 0;
 int joyYLastState = 0;
 
 //------Drink Menu-------------------------------------
-char* menu[] = {"Test", "Drink2", "Drink3", "Drink4", "Drink5", "Drink6"};
+char* menu[] = {"Drink1", "Drink2", "Drink3", "Drink4", "Drink5", "Drink6"};
 //------Pump Menu--------------------------------------
 int pump[] = {0, 0, 0};
 int changes[] = {0, 0, 0};
@@ -58,7 +58,6 @@ void setup() {
 }
 
 void loop() {
-  Serial.println(menuSel);
   joyX = analogRead(pinJoyX);
   joyY = analogRead(pinJoyY);
 //  Serial.print("X: ");
@@ -69,6 +68,7 @@ void loop() {
 //  Serial.println(btnState);
   delay(50);
   btnState = digitalRead(pinJoyBtn);
+  Serial.println(btnState);
   if(menuSel == 0){
     updateDrinkSelScreen();
     if(btnState != lastBtnState){
@@ -135,6 +135,9 @@ void loop() {
       joyYLastState = joyYState;
     }
   }
+
+  //==Listen to Serial monitor======
+  if(Serial.available() > 0) menu[drinkSel] = Serial.readString().c_str();
 }
 
 void updateDrinkSelScreen(){
