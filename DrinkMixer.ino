@@ -30,12 +30,15 @@ int joyYState = 0;
 int joyYLastState = 0;
 
 //------Drink Menu-------------------------------------
-char* menu[] = {"Drink1", "Drink2", "Drink3", "Drink4", "Drink5", "Drink6"};
+char* menu[] = {"Test", "Drink2", "Drink3", "Drink4", "Drink5", "Drink6"};
+//------Pump Menu--------------------------------------
+int pump[] = {0, 0, 0};
+int changes[] = {0, 0, 0};
 
 //------Selection Values-------------------------------
 int drinkSel = 0;
-int sizeSel = 0;
-int settingSel = 0;
+int menuSel = 0; //Determines whether to display the drink menu or setting menu
+int pumpSel = 0; //0-2
 
 
 void setup() {
@@ -57,8 +60,7 @@ void setup() {
 }
 
 void loop() {
-  // put your main code here, to run repeatedly:
-  updateDrinkSelScreen();
+  Serial.println(menuSel);
   joyX = analogRead(pinJoyX);
   joyY = analogRead(pinJoyY);
 //  Serial.print("X: ");
@@ -69,36 +71,74 @@ void loop() {
 //  Serial.println(btnState);
   delay(50);
   btnState = digitalRead(pinJoyBtn);
-  if(btnState != lastBtnState){
-    if(btnState == HIGH){
-      Serial.println("on");
-    } else {
-      Serial.println("off");
+  if(menuSel == 0){
+    updateDrinkSelScreen();
+    if(btnState != lastBtnState){
+      if(btnState == HIGH){
+        Serial.println("on");
+      } else {
+        Serial.println("off");
+      }
+      delay(50);
     }
-    delay(50);
-  }
-  lastBtnState = btnState;
+    lastBtnState = btnState;
+  
+    if(joyX > 800 || joyX < 300) joyXState = 1;
+    else joyXState = 0;
+    if(joyY > 800 || joyY < 300) joyYState = 1;
+    else joyYState = 0;
+  
+    if(joyXState != joyXLastState){
+      if(joyXState == 1 && joyX > 800){
+        drinkRight();  
+      } else if(joyXState == 1 && joyX < 300){
+        drinkLeft();
+      }
+      joyXLastState = joyXState;
+    }
+    if(joyYState != joyYLastState){
+      if(joyYState == 1 && joyY > 800){
+        getPumpValues();
+        menuSel = 1;
+      } else if(joyYState == 1 && joyY < 300){
+        //DrinkJoyUp
+      }
+      joyXLastState = joyXState;
+    }
+  } else if(menuSel == 1){  //==============Setting Menu Control========================
+    updateSettingScreen();
+    if(btnState != lastBtnState){
+      if(btnState == HIGH){
+        Serial.println("on");
+        menuSel = 0;
+      } else {
+        Serial.println("off");
+      }
+      delay(50);
+    }
+    lastBtnState = btnState;
 
-  if(joyX > 800 || joyX < 300) joyXState = 1;
-  else joyXState = 0;
-  if(joyY > 800 || joyY < 300) joyYState = 1;
-  else joyYState = 0;
+    if(joyX > 800 || joyX < 300) joyXState = 1;
+    else joyXState = 0;
+    if(joyY > 800 || joyY < 300) joyYState = 1;
+    else joyYState = 0;
 
-  if(joyXState != joyXLastState){
-    if(joyXState == 1 && joyX > 800){
-      joyRight();  
-    } else if(joyXState == 1 && joyX < 300){
-      joyLeft();
+    if(joyXState != joyXLastState){
+      if(joyXState == 1 && joyX > 800){
+        pumpRight();  
+      } else if(joyXState == 1 && joyX < 300){
+        pumpLeft();
+      }
+      joyXLastState = joyXState;
     }
-    joyXLastState = joyXState;
-  }
-  if(joyYState != joyYLastState){
-    if(joyYState == 1 && joyY > 800){
-      joyDown();
-    } else if(joyYState == 1 && joyY < 300){
-      joyUp();
+    if(joyYState != joyYLastState){
+      if(joyYState == 1 && joyY > 800){
+        //SettingJoyDown
+      } else if(joyYState == 1 && joyY < 300){
+        //SettingJoyDown
+      }
+      joyXLastState = joyXState;
     }
-    joyXLastState = joyXState;
   }
 }
 
@@ -111,52 +151,54 @@ void updateDrinkSelScreen(){
   display.display();
 }
 
-void joyLeft(){
+void updateSettingScreen(){
+  display.clearDisplay();
+  display.setTextSize(2);
+  display.setCursor(0, 0);
+  display.print("Pump ");
+  display.println(pumpSel + 1);
+  display.print(changes[pumpSel]);
+  display.print(" oz");
+  display.display();
+  for(int i = 0; i < 3; i++){
+    Serial.println(changes[i]);
+  }
+}
+
+void drinkLeft(){
   if(drinkSel == 0) drinkSel = sizeof(menu) / sizeof(char*) - 1;
   else drinkSel--;
-  Serial.println("Drink " + drinkSel);
   updateDrinkSelScreen();
 }
 
-void joyRight(){
+void drinkRight(){
   if(drinkSel == sizeof(menu) / sizeof( char* ) - 1) drinkSel = 0;
   else drinkSel++;
-  Serial.println("Drink " + drinkSel);
   updateDrinkSelScreen();
+}
+
+void getPumpValues(){
+  for(int i = 0; i < 3; i++){
+    pump[i] = EEPROM.read(drinkSel * 3 + i);
+    changes[i] = EEPROM.read(drinkSel * 3 + i);
+  }
+}
+
+void pumpLeft(){
+  if(pumpSel == 0) pumpSel = sizeof(changes) / sizeof( int ) - 1;
+  else pumpSel--;
+  updateSettingScreen();
+}
+
+void pumpRight(){
+  if(pumpSel == sizeof(changes) / sizeof( int ) - 1) pumpSel = 0;
+  else pumpSel++;
+  updateSettingScreen();
 }
 
 void joyDown(){
-  Serial.println("Start");
-  joyXLastState = 0;
-  joyYLastState = 0;
-  display.clearDisplay();
-  display.display();
-  for(;;){
-    joyX = analogRead(pinJoyX);
-    joyY = analogRead(pinJoyY);
-//    Serial.print("X: ");
-//    Serial.print(joyX);
-//    Serial.print(" Y: ");
-//    Serial.print(joyY);
-//    Serial.print(" ");
-//    Serial.println(btnState);
-    if(joyX > 800 || joyX < 300) joyXState = 1;
-    else joyXState = 0;
-    if(joyY > 800 || joyY < 300) joyYState = 1;
-    else joyYState = 0;
-    if(joyYState != joyYLastState){
-      if(joyYState == 1 && joyY > 800){
-        joyDown();
-      } else if(joyYState == 1 && joyY < 300){
-        break;
-      }
-      joyYLastState = joyYState;
-    }
-  }
-  Serial.println("Done");
 }
 
 void joyUp(){
-  
 }
 
