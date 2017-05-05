@@ -99,6 +99,7 @@ void loop() {
     if(joyYState != joyYLastState){
       if(joyYState == 1 && joyY > 800){
         getPumpValues();
+        pumpSel = 0;
         menuSel = 1;
       } else if(joyYState == 1 && joyY < 300){
         //DrinkJoyUp
