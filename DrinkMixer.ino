@@ -12,9 +12,7 @@ Adafruit_SSD1306 display(OLED_RESET);
 int pinJoyX = 0;
 int pinJoyY = 1;
 int pinJoyBtn = 2;
-int pinRelay1 = 3;
-int pinRelay2 = 4;
-int pinRelay3 = 5;
+int pinRelay[] = {3, 4, 5};
 int pinRedLED = 6;
 int pinGreenLED = 7;
 
@@ -157,13 +155,27 @@ void updateSettingScreen(){
   display.print(changes[pumpSel]);
   display.print(" oz");
   display.display();
-  for(int i = 0; i < 3; i++){
-    Serial.println(changes[i]);
-  }
 }
 
 void pourDrink(){
-  //TODO::Implement pouring the drink
+  display.clearDisplay();
+  display.setTextSize(2);
+  display.setCursor(0, 0);
+  display.println("Pouring");
+  display.println("Drink...");
+  getPumpValues();
+  display.display();
+  for(int i = 0; i < 3; i++){
+    analogWrite(pinRelay[i], 0);
+    delay(pump[i] * 1000); //Change this to use timer1
+    analogWrite(pinRelay[i], 255);
+  }
+  display.clearDisplay();
+  display.setCursor(0, 0);
+  display.println("Drink");
+  display.println("Complete");
+  display.display();
+  delay(2000);
 }
 
 void drinkLeft(){
