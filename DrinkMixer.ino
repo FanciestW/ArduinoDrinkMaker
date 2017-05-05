@@ -133,9 +133,9 @@ void loop() {
     }
     if(joyYState != joyYLastState){
       if(joyYState == 1 && joyY > 800){
-        //SettingJoyDown
+        pumpDown();
       } else if(joyYState == 1 && joyY < 300){
-        //SettingJoyDown
+        pumpUp();
       }
       joyXLastState = joyXState;
     }
@@ -196,9 +196,15 @@ void pumpRight(){
   updateSettingScreen();
 }
 
-void joyDown(){
+void pumpDown(){
+  if(changes[pumpSel] == 0) changes[pumpSel] = 10;
+  else changes[pumpSel]--;
+  updateSettingScreen();
 }
 
-void joyUp(){
+void pumpUp(){
+  if(changes[pumpSel] == 10) changes[pumpSel] = 0;
+  else changes[pumpSel]++;
+  updateSettingScreen();
 }
 
