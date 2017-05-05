@@ -109,10 +109,8 @@ void loop() {
     updateSettingScreen();
     if(btnState != lastBtnState){
       if(btnState == HIGH){
-        Serial.println("on");
+        setPumpChanges();
         menuSel = 0;
-      } else {
-        Serial.println("off");
       }
       delay(50);
     }
@@ -181,6 +179,14 @@ void getPumpValues(){
   for(int i = 0; i < 3; i++){
     pump[i] = EEPROM.read(drinkSel * 3 + i);
     changes[i] = EEPROM.read(drinkSel * 3 + i);
+  }
+}
+
+void setPumpChanges(){
+  for(int i = 0; i < 3; i++){
+    if(pump[i] != changes[i]){
+      EEPROM.write(drinkSel * 3 + i, changes[i]);
+    }
   }
 }
 
