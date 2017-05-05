@@ -136,6 +136,7 @@ void loop() {
     }
   }
 
+  //FIXME::Renaming causes drink name to not be displayed at all
   //==Listen to Serial monitor======
   if(Serial.available() > 0) menu[drinkSel] = Serial.readString().c_str();
 }
