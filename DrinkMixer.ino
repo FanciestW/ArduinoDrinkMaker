@@ -76,8 +76,6 @@ void loop() {
     if(btnState != lastBtnState){
       if(btnState == HIGH){
         Serial.println("on");
-      } else {
-        Serial.println("off");
       }
       delay(50);
     }
