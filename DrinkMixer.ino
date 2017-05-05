@@ -103,7 +103,7 @@ void loop() {
       } else if(joyYState == 1 && joyY < 300){
         //DrinkJoyUp
       }
-      joyXLastState = joyXState;
+      joyYLastState = joyYState;
     }
   } else if(menuSel == 1){  //==============Setting Menu Control========================
     updateSettingScreen();
@@ -137,7 +137,7 @@ void loop() {
       } else if(joyYState == 1 && joyY < 300){
         pumpUp();
       }
-      joyXLastState = joyXState;
+      joyYLastState = joyYState;
     }
   }
 }
