@@ -146,6 +146,13 @@ void updateDrinkSelScreen(){
   display.setTextSize(2);
   display.setCursor(0, 0);
   display.print(menu[drinkSel]);
+  getPumpValues();
+  display.setCursor(0, 20);
+  display.setTextSize(1);
+  for(int i = 0; i < 3; i++){
+    display.print(pump[i]);
+    display.print("oz   ");
+  }
   display.display();
 }
 
