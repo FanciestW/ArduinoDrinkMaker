@@ -60,52 +60,52 @@ void setup() {
 void loop() {
   joyX = analogRead(pinJoyX);
   joyY = analogRead(pinJoyY);
-//  Serial.print("X: ");
-//  Serial.print(joyX);
-//  Serial.print(" Y: ");
-//  Serial.print(joyY);
-//  Serial.print(" ");
-//  Serial.println(btnState);
+  //  Serial.print("X: ");
+  //  Serial.print(joyX);
+  //  Serial.print(" Y: ");
+  //  Serial.print(joyY);
+  //  Serial.print(" ");
+  //  Serial.println(btnState);
   delay(50);
   btnState = digitalRead(pinJoyBtn);
   Serial.println(btnState);
-  if(menuSel == 0){
+  if (menuSel == 0) {
     updateDrinkSelScreen();
-    if(btnState != lastBtnState){
-      if(btnState == HIGH){
+    if (btnState != lastBtnState) {
+      if (btnState == HIGH) {
         pourDrink();
       }
       delay(50);
     }
     lastBtnState = btnState;
-  
-    if(joyX > 800 || joyX < 300) joyXState = 1;
+
+    if (joyX > 800 || joyX < 300) joyXState = 1;
     else joyXState = 0;
-    if(joyY > 800 || joyY < 300) joyYState = 1;
+    if (joyY > 800 || joyY < 300) joyYState = 1;
     else joyYState = 0;
-  
-    if(joyXState != joyXLastState){
-      if(joyXState == 1 && joyX > 800){
-        drinkRight();  
-      } else if(joyXState == 1 && joyX < 300){
+
+    if (joyXState != joyXLastState) {
+      if (joyXState == 1 && joyX > 800) {
+        drinkRight();
+      } else if (joyXState == 1 && joyX < 300) {
         drinkLeft();
       }
       joyXLastState = joyXState;
     }
-    if(joyYState != joyYLastState){
-      if(joyYState == 1 && joyY > 800){
+    if (joyYState != joyYLastState) {
+      if (joyYState == 1 && joyY > 800) {
         getPumpValues();
         pumpSel = 0;
         menuSel = 1;
-      } else if(joyYState == 1 && joyY < 300){
+      } else if (joyYState == 1 && joyY < 300) {
         //DrinkJoyUp
       }
       joyYLastState = joyYState;
     }
-  } else if(menuSel == 1){  //==============Setting Menu Control========================
+  } else if (menuSel == 1) { //==============Setting Menu Control========================
     updateSettingScreen();
-    if(btnState != lastBtnState){
-      if(btnState == HIGH){
+    if (btnState != lastBtnState) {
+      if (btnState == HIGH) {
         setPumpChanges();
         menuSel = 0;
       }
@@ -113,23 +113,23 @@ void loop() {
     }
     lastBtnState = btnState;
 
-    if(joyX > 800 || joyX < 300) joyXState = 1;
+    if (joyX > 800 || joyX < 300) joyXState = 1;
     else joyXState = 0;
-    if(joyY > 800 || joyY < 300) joyYState = 1;
+    if (joyY > 800 || joyY < 300) joyYState = 1;
     else joyYState = 0;
 
-    if(joyXState != joyXLastState){
-      if(joyXState == 1 && joyX > 800){
-        pumpRight();  
-      } else if(joyXState == 1 && joyX < 300){
+    if (joyXState != joyXLastState) {
+      if (joyXState == 1 && joyX > 800) {
+        pumpRight();
+      } else if (joyXState == 1 && joyX < 300) {
         pumpLeft();
       }
       joyXLastState = joyXState;
     }
-    if(joyYState != joyYLastState){
-      if(joyYState == 1 && joyY > 800){
+    if (joyYState != joyYLastState) {
+      if (joyYState == 1 && joyY > 800) {
         pumpDown();
-      } else if(joyYState == 1 && joyY < 300){
+      } else if (joyYState == 1 && joyY < 300) {
         pumpUp();
       }
       joyYLastState = joyYState;
@@ -138,10 +138,10 @@ void loop() {
 
   //FIXME::Renaming causes drink name to not be displayed at all
   //==Listen to Serial monitor======
-  if(Serial.available() > 0) menu[drinkSel] = Serial.readString().c_str();
+  if (Serial.available() > 0) menu[drinkSel] = Serial.readString().c_str();
 }
 
-void updateDrinkSelScreen(){
+void updateDrinkSelScreen() {
   display.clearDisplay();
   display.setTextSize(2);
   display.setCursor(0, 0);
@@ -149,14 +149,14 @@ void updateDrinkSelScreen(){
   getPumpValues();
   display.setCursor(0, 20);
   display.setTextSize(1);
-  for(int i = 0; i < 3; i++){
+  for (int i = 0; i < 3; i++) {
     display.print(pump[i]);
     display.print("oz   ");
   }
   display.display();
 }
 
-void updateSettingScreen(){
+void updateSettingScreen() {
   display.clearDisplay();
   display.setTextSize(2);
   display.setCursor(0, 0);
@@ -167,7 +167,7 @@ void updateSettingScreen(){
   display.display();
 }
 
-void pourDrink(){
+void pourDrink() {
   display.clearDisplay();
   display.setTextSize(2);
   display.setCursor(0, 0);
@@ -175,7 +175,7 @@ void pourDrink(){
   display.println("Drink...");
   getPumpValues();
   display.display();
-  for(int i = 0; i < 3; i++){
+  for (int i = 0; i < 3; i++) {
     analogWrite(pinRelay[i], 0);
     delay(pump[i] * 1000); //Change this to use timer1
     analogWrite(pinRelay[i], 255);
@@ -188,53 +188,53 @@ void pourDrink(){
   delay(2000);
 }
 
-void drinkLeft(){
-  if(drinkSel == 0) drinkSel = sizeof(menu) / sizeof(char*) - 1;
+void drinkLeft() {
+  if (drinkSel == 0) drinkSel = sizeof(menu) / sizeof(char*) - 1;
   else drinkSel--;
   updateDrinkSelScreen();
 }
 
-void drinkRight(){
-  if(drinkSel == sizeof(menu) / sizeof( char* ) - 1) drinkSel = 0;
+void drinkRight() {
+  if (drinkSel == sizeof(menu) / sizeof( char* ) - 1) drinkSel = 0;
   else drinkSel++;
   updateDrinkSelScreen();
 }
 
-void getPumpValues(){
-  for(int i = 0; i < 3; i++){
+void getPumpValues() {
+  for (int i = 0; i < 3; i++) {
     pump[i] = EEPROM.read(drinkSel * 3 + i);
     changes[i] = EEPROM.read(drinkSel * 3 + i);
   }
 }
 
-void setPumpChanges(){
-  for(int i = 0; i < 3; i++){
-    if(pump[i] != changes[i]){
+void setPumpChanges() {
+  for (int i = 0; i < 3; i++) {
+    if (pump[i] != changes[i]) {
       EEPROM.write(drinkSel * 3 + i, changes[i]);
     }
   }
 }
 
-void pumpLeft(){
-  if(pumpSel == 0) pumpSel = sizeof(changes) / sizeof( int ) - 1;
+void pumpLeft() {
+  if (pumpSel == 0) pumpSel = sizeof(changes) / sizeof( int ) - 1;
   else pumpSel--;
   updateSettingScreen();
 }
 
-void pumpRight(){
-  if(pumpSel == sizeof(changes) / sizeof( int ) - 1) pumpSel = 0;
+void pumpRight() {
+  if (pumpSel == sizeof(changes) / sizeof( int ) - 1) pumpSel = 0;
   else pumpSel++;
   updateSettingScreen();
 }
 
-void pumpDown(){
-  if(changes[pumpSel] == 0) changes[pumpSel] = 10;
+void pumpDown() {
+  if (changes[pumpSel] == 0) changes[pumpSel] = 10;
   else changes[pumpSel]--;
   updateSettingScreen();
 }
 
-void pumpUp(){
-  if(changes[pumpSel] == 10) changes[pumpSel] = 0;
+void pumpUp() {
+  if (changes[pumpSel] == 10) changes[pumpSel] = 0;
   else changes[pumpSel]++;
   updateSettingScreen();
 }
